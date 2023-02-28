@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+gcloud:
+  bigquery:
+    translation:
+      projectId: 'root-stock-378622'
+      location: 'us'
+      inPath: 'thom_test_bucket'
+      outPath: 'thomastran-bucket'
+      workflowName: 'testWorkflow'
+      taskName: 'testTask'
+
+logging:
+  level:
+    root: info
