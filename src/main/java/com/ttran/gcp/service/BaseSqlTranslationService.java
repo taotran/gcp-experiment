@@ -35,7 +35,8 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
         log.info("After pre-process request {}", request);
 
         // write raw data to bucket
-        final boolean inputDataCreated = bucketService.createBlob("test_conversion.hql", request.getData(),
+        final boolean inputDataCreated = bucketService.createBlob(request.getSrcFilePath() + "/" + "test_file.hql",
+                request.getData(),
                 request.getProjectId(),
                 request.getInPath());
 
@@ -47,8 +48,10 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
                 createTranslationWorkflow(
                         postPreProcReq.getProjectId(),
                         parent,
-                        postPreProcReq.getOutPath(),
                         postPreProcReq.getInPath(),
+                        postPreProcReq.getSrcFilePath(),
+                        postPreProcReq.getOutPath(),
+                        postPreProcReq.getDestFilePath(),
                         postPreProcReq.getWorkflowName(),
                         postPreProcReq.getTaskName());
 
@@ -57,15 +60,21 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
 
         final String taskId = reportWorkflowStatus(response, request.getTaskName());
         log.info("Task {}", taskId);
-        return postProcess(migrationWorkflow,
-                SqlTranslationResponse.of(response.getName(), response.getDisplayName(), taskId, Collections.emptyList()));
+        return postProcess(request,
+                SqlTranslationResponse
+                        .builder()
+                        .workflowName(response.getName())
+                        .workflowDisplayName(response.getDisplayName())
+                        .taskId(taskId)
+                        .output(Collections.emptyList())
+                        .build());
     }
 
     protected SqlTranslationRequest preProcess(SqlTranslationRequest request) {
         return request;
     }
 
-    protected SqlTranslationResponse postProcess(MigrationWorkflow responseWorkflow, SqlTranslationResponse response) throws Exception {
+    protected SqlTranslationResponse postProcess(SqlTranslationRequest request, SqlTranslationResponse response) throws Exception {
         if (!tryGetResult()) {
             return response;
         }
@@ -76,9 +85,17 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
                     UUID.fromString(response.getTaskId()));
 
             log.info("current status: {}, {} tries", task.getState(), count);
+
+            if (MigrationTask.State.FAILED.name().equalsIgnoreCase(task.getState())) {
+                log.warn("FAILED, {}", task);
+                response.setLatestStatus(MigrationTask.State.FAILED.name());
+                return response;
+            }
+
             if (MigrationTask.State.SUCCEEDED.name().equalsIgnoreCase(task.getState())) {
                 log.info("SUCCESS, {}", task);
-                response.setOutput(formatOutput(getConvertedQueries()));
+                response.setOutput(formatOutput(getConvertedQueries(request.getDestFilePath())));
+                response.setLatestStatus(MigrationTask.State.SUCCEEDED.name());
                 return response;
             }
 
@@ -91,15 +108,17 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
         return response;
     }
 
-    protected String getConvertedQueries() throws Exception {
-        return bucketService.getBlobContent("test_conversion.hql", translationProperties.getProjectId(),
+    protected String getConvertedQueries(String destFilePath) throws Exception {
+        return bucketService.getBlobContent(destFilePath + "/" + "test_file.hql", translationProperties.getProjectId(),
                 translationProperties.getOutPath());
     }
 
     private MigrationWorkflow createTranslationWorkflow(String projectId,
                                                         LocationName parent,
-                                                        String outPath,
                                                         String inPath,
+                                                        String srcFilePath,
+                                                        String outPath,
+                                                        String destFilePath,
                                                         String workflowName,
                                                         String taskName) {
         MigrationWorkflow workflow = null;
@@ -108,8 +127,8 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
         try {
 
             final TranslationConfigDetails taskDetails = TranslationConfigDetails.newBuilder()
-                    .setGcsSourcePath(correctGsBucketUri(inPath))
-                    .setGcsTargetPath(correctGsBucketUri(outPath))
+                    .setGcsSourcePath(correctGsBucketUri(inPath + "/" + srcFilePath))
+                    .setGcsTargetPath(correctGsBucketUri(outPath) + "/" + destFilePath)
                     .setSourceDialect(translationDialect.getSource())
                     .setTargetDialect(translationDialect.getTarget())
                     .build();
@@ -165,7 +184,8 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
 
     protected List<String> formatOutput(String rawContent) {
         return StringUtils.isBlank(rawContent) ? Collections.emptyList() :
-                Arrays.stream(rawContent.split(";")).map(s->s.replace("\n"," ")).collect(Collectors.toList());
+                Arrays.stream(rawContent.split(";")).map(s -> s.trim().replace("\n", " ")).filter(StringUtils::isNotBlank
+        ).collect(Collectors.toList());
     }
 
 }

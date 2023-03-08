@@ -16,7 +16,7 @@ public interface SqlTranslationService {
     TranslationTaskType taskType();
 
     default int numberOfRetries() {
-        return 4;
+        return 6;
     }
 
     default boolean tryGetResult(){

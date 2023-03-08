@@ -13,20 +13,12 @@ public class SqlTranslationRequest {
     private String projectId;
     private String location = "us";
     private String inPath;
+    private String srcFilePath;
     private String outPath;
+    private String destFilePath;
     private String workflowName;
     private String taskName;
     private Object data;
-
-    public SqlTranslationRequest(Object data, String inPath, String outPath) {
-        this.data = data;
-        this.inPath = inPath;
-        this.outPath = outPath;
-    }
-
-    public SqlTranslationRequest(Object data) {
-        this.data = data;
-    }
 
     public static SqlTranslationRequest of(TranslationRequestPayload<?> requestPayload, GcpTranslationProperties properties) {
         return SqlTranslationRequest
@@ -35,8 +27,12 @@ public class SqlTranslationRequest {
                 .location(properties.getLocation())
                 .inPath(StringUtils.isBlank(requestPayload.getConfigInPath()) ? properties.getInPath() :
                         requestPayload.getConfigInPath())
+                .srcFilePath(StringUtils.isBlank(requestPayload.getConfigSrcFilePath()) ?
+                        properties.getSrcFilePath() : requestPayload.getConfigSrcFilePath())
                 .outPath(StringUtils.isBlank(requestPayload.getConfigOutput()) ? properties.getOutPath() :
                         requestPayload.getConfigOutput())
+                .destFilePath(StringUtils.isBlank(requestPayload.getConfigDestFilePath()) ?
+                        properties.getDestFilePath() : requestPayload.getConfigDestFilePath())
                 .workflowName(properties.getWorkflowName())
                 .taskName(properties.getTaskName())
                 .data(requestPayload.getData())

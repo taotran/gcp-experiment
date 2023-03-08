@@ -15,7 +15,9 @@ public class GcpTranslationProperties {
     private String projectId;
     private String location;
     private String inPath;
+    private String srcFilePath;
     private String outPath;
+    private String destFilePath;
     private String workflowName;
     private String taskName;
 }

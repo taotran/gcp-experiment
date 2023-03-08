@@ -6,8 +6,10 @@ gcloud:
     translation:
       projectId: 'root-stock-378622'
       location: 'us'
-      inPath: 'thom_test_bucket'
-      outPath: 'thomastran-bucket'
+      inPath: 'axp-lumid-mdm2'
+      srcFilePath: 'temp/hive_bq_conversion_src'
+      outPath: 'axp-lumid-mdm2'
+      destFilePath: 'temp/hive_bq_conversion'
       workflowName: 'testWorkflow'
       taskName: 'testTask'
 

@@ -65,7 +65,9 @@ public class GcpBucketService {
             baos.write(line.getBytes(StandardCharsets.UTF_8));
         }
 
-        return bucket.create(blobName, new ByteArrayInputStream(baos.toByteArray())) != null;
+        final Blob createdBlob = bucket.create(blobName, new ByteArrayInputStream(baos.toByteArray()));
+
+        return createdBlob.exists();
     }
 
     public String getBlobContent(String blobName, String projectId, String bucketName) throws Exception {

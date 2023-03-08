@@ -23,7 +23,7 @@ public class GcpBucket {
 //                .fromStream(new FileInputStream("/Users/taotran/Downloads/root-stock-378622-6f53de22b4af.json"));
 
         final String projectId = "root-stock-378622";
-        final String inPath = "gs://thom_test_bucket/test_hive_copy.hql";
+        final String inPath = "gs://thom_test_bucket1/test_hive_copy.hql";
         final String outPath = "gs://thomastran-bucket";
         final String workflowName = "testWf";
         final String taskName = "testTask";
