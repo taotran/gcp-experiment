@@ -35,7 +35,8 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
         log.info("After pre-process request {}", request);
 
         // write raw data to bucket
-        final boolean inputDataCreated = bucketService.createBlob(request.getSrcFilePath() + "/" + "test_file.hql",
+        log.info("Writing query to gcs, path = {}, content = {}", request.getSrcFilePath(), request.getData());
+        final boolean inputDataCreated = bucketService.createBlob(request.getSrcFilePath(),
                 request.getData(),
                 request.getProjectId(),
                 request.getInPath());
@@ -109,7 +110,7 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
     }
 
     protected String getConvertedQueries(String destFilePath) throws Exception {
-        return bucketService.getBlobContent(destFilePath + "/" + "test_file.hql", translationProperties.getProjectId(),
+        return bucketService.getBlobContent(destFilePath, translationProperties.getProjectId(),
                 translationProperties.getOutPath());
     }
 
@@ -127,8 +128,8 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
         try {
 
             final TranslationConfigDetails taskDetails = TranslationConfigDetails.newBuilder()
-                    .setGcsSourcePath(correctGsBucketUri(inPath + "/" + srcFilePath))
-                    .setGcsTargetPath(correctGsBucketUri(outPath) + "/" + destFilePath)
+                    .setGcsSourcePath(correctGsBucketUri(inPath + "/" + extractFilePathFromFullPath(srcFilePath)))
+                    .setGcsTargetPath(correctGsBucketUri(outPath) + "/" + extractFilePathFromFullPath(destFilePath))
                     .setSourceDialect(translationDialect.getSource())
                     .setTargetDialect(translationDialect.getTarget())
                     .build();
@@ -185,7 +186,12 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
     protected List<String> formatOutput(String rawContent) {
         return StringUtils.isBlank(rawContent) ? Collections.emptyList() :
                 Arrays.stream(rawContent.split(";")).map(s -> s.trim().replace("\n", " ")).filter(StringUtils::isNotBlank
-        ).collect(Collectors.toList());
+                ).collect(Collectors.toList());
+    }
+
+    private String extractFilePathFromFullPath(String fullFilePath) {
+        final int lastIndex = fullFilePath.lastIndexOf("/");
+        return fullFilePath.substring(0, lastIndex);
     }
 
 }

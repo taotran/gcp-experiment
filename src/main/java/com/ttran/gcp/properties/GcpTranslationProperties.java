@@ -1,23 +1,17 @@
 package com.ttran.gcp.properties;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Getter
 @Setter
 @ConfigurationProperties("gcloud.bigquery.translation")
-public class GcpTranslationProperties {
+public class GcpTranslationProperties extends BaseTranslationProperties {
     private String projectId;
     private String location;
     private String inPath;
-    private String srcFilePath;
-    private String outPath;
-    private String destFilePath;
     private String workflowName;
     private String taskName;
 }

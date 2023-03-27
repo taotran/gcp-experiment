@@ -1,10 +1,14 @@
 package com.ttran.gcp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ttran.gcp.properties.BaseTranslationProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Assert;
 
 @Getter
 @Setter
@@ -14,7 +18,8 @@ public class TranslationRequestPayload<T> {
 
     private String type;
     private T data;
-    private GcpConfigInfo config = null;
+    private BaseTranslationProperties config = null;
+
 
     public String getConfigInPath() {
         return config == null ? null : config.getInPath();
@@ -30,15 +35,5 @@ public class TranslationRequestPayload<T> {
 
     public String getConfigOutput() {
         return config == null ? null : config.getOutPath();
-    }
-
-    @NoArgsConstructor
-    @Getter
-    @Setter
-    public static class GcpConfigInfo {
-        private String inPath;
-        private String srcFilePath;
-        private String outPath;
-        private String destFilePath;
     }
 }

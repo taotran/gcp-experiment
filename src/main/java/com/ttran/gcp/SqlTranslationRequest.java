@@ -1,21 +1,18 @@
 package com.ttran.gcp;
 
+import com.ttran.gcp.properties.BaseTranslationProperties;
 import com.ttran.gcp.properties.GcpTranslationProperties;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.junit.platform.commons.util.StringUtils;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@SuperBuilder
 @Getter
 @Setter
-public class SqlTranslationRequest {
+public class SqlTranslationRequest extends BaseTranslationProperties {
     private String projectId;
     private String location = "us";
-    private String inPath;
-    private String srcFilePath;
-    private String outPath;
-    private String destFilePath;
     private String workflowName;
     private String taskName;
     private Object data;

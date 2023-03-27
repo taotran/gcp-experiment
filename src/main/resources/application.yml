@@ -7,9 +7,9 @@ gcloud:
       projectId: 'root-stock-378622'
       location: 'us'
       inPath: 'axp-lumid-mdm2'
-      srcFilePath: 'temp/hive_bq_conversion_src'
+      srcFilePath: 'temp/hive_bq_conversion_src/default_file.hql'
       outPath: 'axp-lumid-mdm2'
-      destFilePath: 'temp/hive_bq_conversion'
+      destFilePath: 'temp/hive_bq_conversion/default_file.hql'
       workflowName: 'testWorkflow'
       taskName: 'testTask'
 
