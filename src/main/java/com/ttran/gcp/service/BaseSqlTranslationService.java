@@ -20,12 +20,18 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
     private final GcpBucketService bucketService;
     private final MigrationService migrationService;
 
+    private final boolean TRACK_STATUS_SILENTLY = true;
+
+
+    private final TranslationJobInquiryManager jobInquiryManager;
+
     @Autowired
     private GcpTranslationProperties translationProperties;
 
-    public BaseSqlTranslationService(GcpBucketService bucketService, MigrationService migrationService) {
+    public BaseSqlTranslationService(GcpBucketService bucketService, MigrationService migrationService, TranslationJobInquiryManager jobInquiryManager) {
         this.bucketService = bucketService;
         this.migrationService = migrationService;
+        this.jobInquiryManager = jobInquiryManager;
     }
 
     @Override
@@ -71,12 +77,20 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
                         .build());
     }
 
+    @Override
+    public boolean tryGetResult() {
+        return false;
+    }
+
     protected SqlTranslationRequest preProcess(SqlTranslationRequest request) {
         return request;
     }
 
     protected SqlTranslationResponse postProcess(SqlTranslationRequest request, SqlTranslationResponse response) throws Exception {
         if (!tryGetResult()) {
+            if (TRACK_STATUS_SILENTLY) {
+                this.startTrackingTranslationStatus(request, response);
+            }
             return response;
         }
 
@@ -106,12 +120,25 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
             count++;
             Thread.sleep(resultRetrieveInterval());
         }
+        // still not get the result -> add to status enquiry queue
+        if (TRACK_STATUS_SILENTLY) {
+            this.startTrackingTranslationStatus(request, response);
+        }
+
         return response;
     }
 
     protected String getConvertedQueries(String destFilePath) throws Exception {
         return bucketService.getBlobContent(destFilePath, translationProperties.getProjectId(),
                 translationProperties.getOutPath());
+    }
+
+    private void startTrackingTranslationStatus(SqlTranslationRequest request, SqlTranslationResponse response) {
+        final TaskWrapper task = migrationService.getMigrationTask(response.getWorkflowName(),
+                UUID.fromString(response.getTaskId()));
+        jobInquiryManager.addTask(task.getId(),
+                new TranslationJobInquiryManager.TaskEnquiryDetails(task.getId(), request.getProjectId(),
+                        extractWorkflowId(response.getWorkflowName())));
     }
 
     private MigrationWorkflow createTranslationWorkflow(String projectId,
@@ -194,4 +221,8 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
         return fullFilePath.substring(0, lastIndex);
     }
 
+    private String extractWorkflowId(String workflowName) {
+        Assert.hasText(workflowName, "Invalid workflowName");
+        return workflowName.substring(workflowName.lastIndexOf('/') + 1);
+    }
 }

@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class Hive2BQTranslationService extends BaseSqlTranslationService {
 
-    public Hive2BQTranslationService(GcpBucketService bucketService, MigrationService migrationService) {
-        super(bucketService, migrationService);
+    public Hive2BQTranslationService(GcpBucketService bucketService, MigrationService migrationService, TranslationJobInquiryManager jobInquiryManager) {
+        super(bucketService, migrationService, jobInquiryManager);
     }
 
     @Override
