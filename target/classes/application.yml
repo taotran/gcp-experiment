@@ -8,8 +8,8 @@ spring:
     gcp:
       pubsub:
         publisher:
-#          endpoint: pubsub-dev.p.googleapis.com:443
-          endpoint: pubsub.googleapis.com:443
+          endpoint: pubsub-dev.p.googleapis.com:443
+#          endpoint: pubsub.googleapis.com:443
         subscription:
           mdm-internal-sub:
             pull-endpoint: pubsub-dev.p.googleapis.com:443

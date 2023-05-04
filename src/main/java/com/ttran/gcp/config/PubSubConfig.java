@@ -11,7 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
-import org.springframework.integration.channel.PublishSubscribeChannel;
+import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
@@ -42,8 +43,8 @@ public class PubSubConfig {
 
     /*Subscriber config*/
     @Bean
-    public MessageChannel inputMessageChannel() {
-        return new PublishSubscribeChannel();
+    public DirectChannel inputMessageChannel() {
+        return MessageChannels.direct().get();
     }
 
     @Bean
