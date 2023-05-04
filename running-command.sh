@@ -1,0 +1,1 @@
+java -jar gcp-experiment-1.0-SNAPSHOT.jar --spring.config.location="file:///Users/taotran/Documents/dev/temp/application-custom.yml"

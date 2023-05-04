@@ -32,7 +32,7 @@ public class GcpBucketService {
     @SuppressWarnings("unchecked")
     public boolean createBlob(String blobName, Object content, String projectId, String bucketName) throws Exception {
         if (content instanceof List) {
-            return createBlob(blobName, (List<String>) content, projectId, bucketName);
+            return createBlob(  blobName, (List<String>) content, projectId, bucketName);
         } else if (content instanceof String) {
             return createBlob(blobName, (String) content, projectId, bucketName);
         }

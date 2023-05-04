@@ -29,7 +29,7 @@ public class TranslationJobInquiryManager {
     @Scheduled(fixedDelay = 5000L)
     public void inquiryTranslationStatus() {
 
-        log.debug("TaskEnquiryDetails size: {}", TASKS_MAP.size());
+//        log.debug("TaskEnquiryDetails size: {}", TASKS_MAP.size());
 
         TASKS_MAP.forEach((taskId, taskDetails) -> {
             final String project = StringUtils.hasText(taskDetails.getProjectId()) ? taskDetails.getProjectId() :

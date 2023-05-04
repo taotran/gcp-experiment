@@ -1,6 +1,23 @@
 server:
   port: 8081
 
+spring:
+  cloud:
+    gcp:
+      pubsub:
+#        publisher:
+#          endpoint: pubsub-dev.p.googleapis.com:443
+#        subscriber:
+#          mdm-internal-sub:
+#            pull-endpoint: pubsub-dev.p.googleapis.com:443
+#            pullEndpoint: pubsub-dev.p.googleapis.com:443
+        globalSubscriber:
+          pull-endpoint: pubsub-dev.p.googleapis.com:443
+          pullEndpoint: pubsub-dev.p.googleapis.com:443
+        subscription:
+          mdm-internal-sub:
+            pull-endpoint: pubsub-dev.p.googleapis.com:443
+
 gcloud:
   bigquery:
     translation:
@@ -15,4 +32,4 @@ gcloud:
 
 logging:
   level:
-    root: info
+    root: debug

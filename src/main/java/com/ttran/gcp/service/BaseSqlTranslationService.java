@@ -20,7 +20,7 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
     private final GcpBucketService bucketService;
     private final MigrationService migrationService;
 
-    private final boolean TRACK_STATUS_SILENTLY = true;
+    private final boolean TRACK_STATUS_SILENTLY = false;
 
 
     private final TranslationJobInquiryManager jobInquiryManager;
@@ -79,7 +79,7 @@ public abstract class BaseSqlTranslationService implements SqlTranslationService
 
     @Override
     public boolean tryGetResult() {
-        return false;
+        return true;
     }
 
     protected SqlTranslationRequest preProcess(SqlTranslationRequest request) {

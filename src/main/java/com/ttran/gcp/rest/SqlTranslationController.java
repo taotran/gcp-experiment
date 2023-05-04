@@ -61,27 +61,31 @@ public class SqlTranslationController {
         return ResponseEntity.ok(migrationService.getMigrationTask(project, workflowId, taskId));
     }
 
-    @GetMapping("/conversions/workflow")
-    public ResponseEntity<?> getTaskStatus1(@RequestParam String workflowName) {
-        final MigrationWorkflow workflow = migrationService.getWorkflow(workflowName);
-        if (workflow == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.ok(workflow);
-    }
+//
+//    @GetMapping("/conversions/")
+//    public ResponseEntity<?> get
 
-    @GetMapping("/conversions/workflow/all")
-    public ResponseEntity<?> getAllWorkflows(@RequestParam(required = false) String project) {
-        final MigrationServiceClient.ListMigrationWorkflowsPagedResponse response =
-                migrationServiceClient.listMigrationWorkflows(LocationName.of(StringUtils.hasText(project) ? project : gcpTranslationProperties.getProjectId(),
-                        "us"));
-        Iterator<MigrationWorkflow> iterator = response.iterateAll().iterator();
-
-        final List<MigrationWorkflow> result = new ArrayList<>();
-        while (iterator.hasNext()) {
-            result.add(iterator.next());
-        }
-
-        return ResponseEntity.ok(result);
-    }
+//    @GetMapping("/conversions/workflow")
+//    public ResponseEntity<?> getTaskStatus1(@RequestParam String workflowName) {
+//        final MigrationWorkflow workflow = migrationService.getWorkflow(workflowName);
+//        if (workflow == null) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//        return ResponseEntity.ok(workflow);
+//    }
+//
+//    @GetMapping("/conversions/workflow/all")
+//    public ResponseEntity<?> getAllWorkflows(@RequestParam(required = false) String project) {
+//        final MigrationServiceClient.ListMigrationWorkflowsPagedResponse response =
+//                migrationServiceClient.listMigrationWorkflows(LocationName.of(StringUtils.hasText(project) ? project : gcpTranslationProperties.getProjectId(),
+//                        "us"));
+//        Iterator<MigrationWorkflow> iterator = response.iterateAll().iterator();
+//
+//        final List<MigrationWorkflow> result = new ArrayList<>();
+//        while (iterator.hasNext()) {
+//            result.add(iterator.next());
+//        }
+//
+//        return ResponseEntity.ok(result);
+//    }
 }
