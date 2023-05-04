@@ -1,16 +1,19 @@
 server:
   port: 8081
 
-gcloud:
-  bigquery:
-    translation:
-      projectId: 'root-stock-378622'
-      location: 'us'
-      inPath: 'thom_test_bucket'
-      outPath: 'thomastran-bucket'
-      workflowName: 'testWorkflow'
-      taskName: 'testTask'
+gcp.pubsub.subscription: mdm-internal-sub
+
+spring:
+  cloud:
+    gcp:
+      pubsub:
+        publisher:
+#          endpoint: pubsub-dev.p.googleapis.com:443
+          endpoint: pubsub.googleapis.com:443
+        subscription:
+          mdm-internal-sub:
+            pull-endpoint: pubsub-dev.p.googleapis.com:443
 
 logging:
   level:
-    root: info
+    root: debug

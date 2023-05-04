@@ -6,6 +6,7 @@ import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAd
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.MessagingGateway;
@@ -19,8 +20,10 @@ import org.springframework.messaging.MessageHandler;
 @Configuration
 public class PubSubConfig {
 
-    /*Publisher config*/
+    @Value("${gcp.pubsub.subscription}")
+    private String subscriptionName;
 
+    /*Publisher config*/
 
     @Bean
     @ServiceActivator(inputChannel = "pubsubOutputChannel")
@@ -37,11 +40,6 @@ public class PubSubConfig {
         return handler;
     }
 
-    @MessagingGateway(defaultRequestChannel = "pubsubOutputChannel")
-    public interface PubsubOutboundGateway {
-        void sendToPubSub(Message<String> msg);
-    }
-
     /*Subscriber config*/
     @Bean
     public MessageChannel inputMessageChannel() {
@@ -52,13 +50,18 @@ public class PubSubConfig {
     public PubSubInboundChannelAdapter inboundChannelAdapter(@Qualifier("inputMessageChannel") MessageChannel messageChannel,
                                                              PubSubTemplate pubSubTemplate) {
         final PubSubInboundChannelAdapter adapter =
-                new PubSubInboundChannelAdapter(pubSubTemplate, "mdm-internal-sub");
+                new PubSubInboundChannelAdapter(pubSubTemplate, subscriptionName);
 
         adapter.setOutputChannel(messageChannel);
         adapter.setAckMode(AckMode.AUTO);
         adapter.setPayloadType(String.class);
 
         return adapter;
+    }
+
+    @MessagingGateway(defaultRequestChannel = "pubsubOutputChannel")
+    public interface PubsubOutboundGateway {
+        void sendToPubSub(Message<String> msg);
     }
 
 }
