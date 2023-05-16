@@ -1,19 +1,35 @@
 server:
   port: 8081
 
-gcp.pubsub.subscription: mdm-internal-sub
-
 spring:
   cloud:
     gcp:
       pubsub:
-        publisher:
-          endpoint: pubsub-dev.p.googleapis.com:443
-#          endpoint: pubsub.googleapis.com:443
+#        publisher:
+#          endpoint: pubsub-dev.p.googleapis.com:443
+#        subscriber:
+#          mdm-internal-sub:
+#            pull-endpoint: pubsub-dev.p.googleapis.com:443
+#            pullEndpoint: pubsub-dev.p.googleapis.com:443
+        globalSubscriber:
+          pull-endpoint: pubsub-dev.p.googleapis.com:443
+          pullEndpoint: pubsub-dev.p.googleapis.com:443
         subscription:
           mdm-internal-sub:
             pull-endpoint: pubsub-dev.p.googleapis.com:443
 
+gcloud:
+  bigquery:
+    translation:
+      projectId: 'root-stock-378622'
+      location: 'us'
+      inPath: 'axp-lumid-mdm2'
+      srcFilePath: 'temp/hive_bq_conversion_src/default_file.hql'
+      outPath: 'axp-lumid-mdm2'
+      destFilePath: 'temp/hive_bq_conversion/default_file.hql'
+      workflowName: 'testWorkflow'
+      taskName: 'testTask'
+
 logging:
   level:
-    root: debug
+    root: info

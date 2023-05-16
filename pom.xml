@@ -30,6 +30,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+<!--        org.aspectj:aspectjweaver:jar:1.9.5-->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
+
         <!-- Testing dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -74,6 +80,19 @@
             <artifactId>spring-integration-core</artifactId>
         </dependency>
 
+
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-logging</artifactId>
+            <version>3.15.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-logging-logback</artifactId>
+            <version>0.130.11-alpha</version>
+        </dependency>
+
 <!--        <dependency>-->
 <!--            <groupId>org.springframework</groupId>-->
 <!--            <artifactId>spring-core</artifactId>-->
@@ -86,7 +105,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.0.4</version>
                 <executions>
                     <execution>
                         <goals>

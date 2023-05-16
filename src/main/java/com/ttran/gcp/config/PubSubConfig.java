@@ -21,7 +21,7 @@ import org.springframework.messaging.MessageHandler;
 @Configuration
 public class PubSubConfig {
 
-    @Value("${gcp.pubsub.subscription}")
+    @Value("${gcp.pubsub.subscription:mdm-internal}")
     private String subscriptionName;
 
     /*Publisher config*/
